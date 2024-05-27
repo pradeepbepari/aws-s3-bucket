@@ -1,8 +1,12 @@
 package middleware
 
-import "mime/multipart"
+import (
+	"mime/multipart"
 
-type Controller interface {
-	UploadToAWS(string, string, multipart.File) error
-	DownloadS3File(string, string) error
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+)
+
+type AwsService interface {
+	UploadToAws(string, string, multipart.File) (*s3manager.UploadOutput, error)
+	DownloadFromAws(string, string) error
 }

@@ -1,9 +1,9 @@
-module github.com/pradeep/aws
+module github.com/pradeepbepari/aws-cloud
 
 go 1.22.1
 
 require (
-	github.com/aws/aws-sdk-go v1.51.26
+	github.com/aws/aws-sdk-go v1.53.9
 	github.com/gorilla/mux v1.8.1
 	github.com/joho/godotenv v1.5.1
 )

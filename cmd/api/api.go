@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	controllers "github.com/pradeep/aws/controllers"
-	upload "github.com/pradeep/aws/middleware/upload"
-	"github.com/pradeep/aws/routes"
+	aws_controler "github.com/pradeepbepari/aws-cloud/aws_controller"
+	awsmiddleware "github.com/pradeepbepari/aws-cloud/middleware/aws_middleware"
+	"github.com/pradeepbepari/aws-cloud/routes"
 )
 
 type ApiServer struct {
@@ -19,11 +19,12 @@ func NewApiServer(addr string) *ApiServer {
 	return &ApiServer{addr: addr}
 }
 func (s *ApiServer) Run() error {
-	backend := upload.NewBackend()
-	controller := controllers.NewHandular(backend)
+
+	aws_service := awsmiddleware.NewAwsOperation()
+	aws_controler := aws_controler.NewAwsService(aws_service)
 	router := mux.NewRouter()
-	subrouter := router.PathPrefix("/api/v1").Subrouter()
-	routes.RegisterRoutes(subrouter, controller)
-	log.Printf("connection successful on port :%s", os.Getenv("PORT"))
+	subrouter := router.PathPrefix("/api/v2").Subrouter()
+	routes.RegisteredRoutes(subrouter, aws_controler)
+	log.Printf("Http sever listening on : %s", os.Getenv("PORT"))
 	return http.ListenAndServe(s.addr, router)
 }

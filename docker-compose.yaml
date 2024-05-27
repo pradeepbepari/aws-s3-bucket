@@ -1,43 +1,44 @@
+version: '3.8'
 services:
-  localstack-svc: 
-    image: localstack/localstack
-    ports:
-      - "4566:4566"  # S3 port
-      - "4571:4571"  # Lambda port
-    environment:
-      - SERVICES=s3
-      - DATA_DIR=/tmp/localstack
-      - DEBUG=1
-      - TEMP_DIR=/temp
-    networks:
-      - test
-    volumes:
-       - ./aws:/etc/localstack/init/ready.d
-    healthcheck:
-      test: curl http://localhost:4566 || exit 1
-      interval: 20s
-      retries: 5
-      start_period: 20s
-      timeout: 10s
   app:
     restart: always
-    ports:
-      - "9000:9000"
     build: 
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     environment:
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-      - AWS_DEFAULT_REGION=us-east-1
+      - PORT=8080
+      - AWS_REGION=us-east-1
+      - AWS_ACCESSKEY=test
+      - AWS_SECRETKEY_ID=test
       - S3_ENDPOINT=http://localstack-svc:4566
     depends_on:
        localstack-svc:
           condition: service_healthy
+    volumes:
+      - ./data:/tem
     networks:
       - test
-    volumes:
-      - ./data:/tmp
+  localstack-svc:
+      image: localstack/localstack
+      ports:
+        - "4566:4566"
+      environment:
+        - SERVICES=s3
+        - DATA_DIR=/tem/localhost
+        - DEBUG=1
+        - TEMP_DIR=/temp
+      networks:
+        - test
+      volumes: 
+        - ./temp:/etc/localstack/init/ready.d
+      healthcheck:
+         test: curl http://localhost:4566   ||  exit 1
+         interval: 20s
+         retries: 5
+         start_period: 20s
+         timeout: 10s
 networks:
   test:
-    driver: bridge
+    driver: bridge      

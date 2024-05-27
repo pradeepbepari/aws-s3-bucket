@@ -6,17 +6,15 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	apiservice "github.com/pradeep/aws/cmd/api"
+	"github.com/pradeepbepari/aws-cloud/cmd/api"
 )
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal(err)
 	}
-
-	server := apiservice.NewApiServer(fmt.Sprintf(":%s", os.Getenv("PORT")))
-	if err := server.Run(); err != nil {
+	serve := api.NewApiServer(fmt.Sprintf(":%s", os.Getenv("PORT")))
+	if err := serve.Run(); err != nil {
 		log.Fatal(err)
 	}
-
 }
